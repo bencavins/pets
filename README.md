@@ -41,3 +41,10 @@
 - [ ] add relationship
 - [ ] add serialize_rules
 - [ ] add route for owners
+
+## Adding the Front-End
+- [ ] create a simple react app with vite
+  - [ ] run `npm create vite@latest`
+  - [ ] run `npm react-router-dom`
+- [ ] set up a fetch
+- [ ] add CORS
