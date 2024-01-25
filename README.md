@@ -34,4 +34,10 @@
 - [ ] Add validation for name and age
 
 ## Relationships
-- [ ] Add Owner class
+- [ ] add Owner class
+- [ ] add fk to Owner on Dog
+- [ ] rewrite seed script
+  - [ ] *tricky* talk about when ids get added
+- [ ] add relationship
+- [ ] add serialize_rules
+- [ ] add route for owners

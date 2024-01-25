@@ -20,6 +20,11 @@ class Dog(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     age = db.Column(db.Integer)
+    owner_id = db.Column(db.Integer, db.ForeignKey('owners.id'))
+
+    owner = db.relationship('Owner', back_populates='dogs')
+
+    serialize_rules = ('-owner.dogs',)
 
     __table_args__ = (
         db.CheckConstraint('age >= 0', 'age_not_neg')
@@ -39,3 +44,17 @@ class Dog(db.Model, SerializerMixin):
 
     def __repr__(self) -> str:
         return f"<Dog name: {self.name}, id: {self.id}>"
+    
+
+class Owner(db.Model, SerializerMixin):
+    __tablename__ = 'owners'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+
+    dogs = db.relationship('Dog', back_populates='owner')
+
+    serialize_rules = ('-dogs.owner',)
+
+    def __repr__(self) -> str:
+        return f"<Owner {self.name}>"
