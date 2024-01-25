@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import Home from './components/Home.jsx'
 import DogList from './components/DogList.jsx'
+import DogDetails from './components/DogDetails.jsx'
 import ErrorPage from './components/ErrorPage.jsx'
 import './index.css'
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
@@ -18,9 +19,13 @@ const router = createBrowserRouter([
         element: <Home />
       },
       {
+        path: '/dogs/:id',
+        element: <DogDetails />
+      },
+      {
         path: '/dogs',
         element: <DogList />
-      }
+      },
     ]
   }
 ])
