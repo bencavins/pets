@@ -1,8 +1,8 @@
 """add Dog
 
-Revision ID: 87bd8ddda617
+Revision ID: 837aec6eceec
 Revises: 
-Create Date: 2024-01-24 11:59:09.846172
+Create Date: 2024-01-25 14:03:12.138617
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '87bd8ddda617'
+revision = '837aec6eceec'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,6 +22,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('age', sa.Integer(), nullable=True),
+    sa.CheckConstraint('age >= 0', name=op.f('ck_dogs_age_not_neg')),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_dogs'))
     )
     # ### end Alembic commands ###
