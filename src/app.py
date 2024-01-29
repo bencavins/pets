@@ -1,8 +1,11 @@
 """
-Can start the app with this command: flask --debug --app src/app.py run
+Can start the app with this command: 
+flask --debug --app src/app.py run --port 5555
 
-Can also set environment variable:
+Can also set environment variables:
 export FLASK_APP=src/app.py
+export FLASK_DEBUG=1
+export FLASK_RUN_PORT=5555
 flask run
 """
 
