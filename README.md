@@ -48,3 +48,7 @@
   - [ ] run `npm react-router-dom`
 - [ ] set up a fetch
 - [ ] add CORS
+- [ ] set up form POST (with error handling)
+
+## Auth
+- [ ] create a User class

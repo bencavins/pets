@@ -6,7 +6,7 @@ export default function DogDetails() {
   const [dog, setDog] = useState()
 
   useEffect(() => {
-    fetch(`http://127.0.0.1:5000/dogs/${id}`)
+    fetch(`http://127.0.0.1:5555/dogs/${id}`)
     .then(resp => resp.json())
     .then(data => setDog(data))
   }, [])
@@ -19,7 +19,7 @@ export default function DogDetails() {
     <>
       <h2>Name: {dog.name}</h2>
       <p>Age: {dog.age}</p>
-      <p>Owner: {dog.owner.name}</p>
+      <p>Owner: {dog.owner ? dog.owner.name : "N/A"}</p>
     </>
   )
 }

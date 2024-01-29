@@ -5,7 +5,7 @@ export default function DogList() {
   const [dogs, setDogs] = useState([])
 
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/dogs")
+    fetch("http://127.0.0.1:5555/dogs")
     .then(resp => resp.json())
     .then(data => setDogs(data))
   }, [])

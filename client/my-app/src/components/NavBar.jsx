@@ -7,13 +7,13 @@ export default function NavBar() {
       <NavLink to="/" className="nav-link">
         Home
       </NavLink>
-      <NavLink to="/dogs" className="nav-link">
+      <NavLink end to="/dogs" className="nav-link">
         Dogs
       </NavLink>
       <NavLink to="/owners" className="nav-link">
         Owners
       </NavLink>
-      <NavLink to="/new-dog" className="nav-link">
+      <NavLink to="/dogs/new" className="nav-link">
         New Dog
       </NavLink>
     </nav>

@@ -24,10 +24,14 @@ def get_all_dogs():
         return [dog.to_dict() for dog in dogs], 200
     elif request.method == 'POST':
         dog_json = request.get_json()
-        new_dog = Dog(
-            name=dog_json.get('name'),
-            age=dog_json.get('age')
-        )
+        try:
+            new_dog = Dog(
+                name=dog_json.get('name'),
+                age=dog_json.get('age'),
+                owner_id=dog_json.get('owner_id')
+            )
+        except ValueError as e:
+            return {'error': str(e)}, 400
         db.session.add(new_dog)
         db.session.commit()
         return new_dog.to_dict(), 201
