@@ -51,4 +51,9 @@
 - [ ] set up form POST (with error handling)
 
 ## Auth
+- [ ] install bcrypt
 - [ ] create a User class
+  - [ ] setup password column with encryption
+- [ ] create login/signup/logout routes
+- [ ] create check session route
+- [ ] use check session in react app
