@@ -10,9 +10,20 @@ flask run
 """
 
 from flask import Flask
+from flask_migrate import Migrate
+from models import db
 
 
+# initialize flask app
 app = Flask(__name__)
+# tell sqlalchemy how to connect to our db
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# add sqlalchemy plugin
+db.init_app(app)
+# add the alembic plugin
+migrate = Migrate(app, db)
+
 
 @app.route('/')
 def get_root():

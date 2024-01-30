@@ -1,10 +1,10 @@
 # pets
 
 ## Intro to Flask
-- [ ] install `flask`
-- [ ] create simple `app.py`
-- [ ] show how to run app
-- [ ] build some basic routes (with params)
+- [x] install `flask`
+- [x] create simple `app.py`
+- [x] show how to run app
+- [x] build some basic routes (with params)
 - [ ] add `.env` file for simplicity (need to install python-dotenv) and `.gitignore`
 
 ## SQLAlchemy & Alembic
