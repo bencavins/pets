@@ -70,6 +70,8 @@ class User(db.Model, SerializerMixin):
     username = db.Column(db.String, unique=True)
     _password_hash = db.Column(db.String)
 
+    serialize_rules = ('-_password_hash',)
+
     @hybrid_property
     def password_hash(self):
         return self._password_hash

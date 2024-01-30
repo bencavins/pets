@@ -1,13 +1,16 @@
-from flask import Flask, request
+import os
+
+from flask import Flask, request, session
 from flask_migrate import Migrate
 from flask_cors import CORS
 
-from models import db, Dog, Owner
+from models import db, Dog, Owner, User
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.secret_key = os.environ.get('SECRET_KEY')
 db.init_app(app)
 migrate = Migrate(app, db)
 cors = CORS(app)
@@ -16,6 +19,41 @@ cors = CORS(app)
 @app.route('/')
 def root():
     return "<h1>Hello world!</h1>"
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    user = User.query.filter(User.username == data.get('username')).first()
+
+    if not user:
+        return {'error': 'user not found'}, 404
+    
+    session['user_id'] = user.id
+    return user.to_dict(), 201
+
+@app.route('/signup', methods=['POST'])
+def signup():
+    data = request.get_json()
+    new_user = User(username=data.get('username'))
+    new_user.password_hash = data.get('password')
+    db.session.add(new_user)
+    db.session.commit()
+    return new_user.to_dict(), 201
+
+@app.route('/logout', methods=['DELETE'])
+def logout():
+    session.pop('user_id')
+    return {}, 204
+
+@app.route('/authorized')
+def is_authorized():
+    user_id = session.get('user_id')
+    user = User.query.filter(User.id == user_id).first()
+
+    if not user:
+        return {'error': 'not authorized'}, 401
+    
+    return user.to_dict(), 200
 
 @app.route('/dogs', methods=['GET', 'POST'])
 def get_all_dogs():
