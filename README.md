@@ -8,14 +8,14 @@
 - [ ] add `.env` file for simplicity (need to install python-dotenv) and `.gitignore`
 
 ## SQLAlchemy & Alembic
-- [ ] install `flask-sqlalchemy`
-- [ ] set up `models.py` with Dog class
-- [ ] install `flask-migrate`, setup alembic and SQLAlchemy
-  - [ ] use a better file template (file_template = %%(year)04d-%%(month)02d-%%(day)02d_%%(hour)02d-%%(minute)02d-%%(second)02d_%%(rev)s_%%(slug)s)
-  - [ ] add the naming convention
-- [ ] run `flask db init`, `flask db migrate`, `flask db upgrade`
-- [ ] add dogs and query dogs with flask shell
-- [ ] write a seed script
+- [x] install `flask-sqlalchemy`
+- [x] set up `models.py` with Dog class
+- [x] install `flask-migrate`, setup alembic and SQLAlchemy
+  - [x] use a better file template (file_template = %%(year)04d-%%(month)02d-%%(day)02d_%%(hour)02d-%%(minute)02d-%%(second)02d_%%(rev)s_%%(slug)s)
+  - [x] add the naming convention
+- [x] run `flask db init`, `flask db migrate`, `flask db upgrade`
+- [x] add dogs and query dogs with flask shell
+- [x] write a seed script
   - [ ] can optionally install `faker`
 
 ## APIs
