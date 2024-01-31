@@ -8,6 +8,7 @@ flask db upgrade -- runs our upgrade scripts
 """
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
+from sqlalchemy_serializer import SerializerMixin
 
 
 # naming conventions (helps with albemic bug)
@@ -20,7 +21,7 @@ convention = {
 }
 db = SQLAlchemy(metadata=MetaData(naming_convention=convention))
 
-class Dog(db.Model):
+class Dog(db.Model, SerializerMixin):
     __tablename__ = 'dogs'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -30,3 +31,5 @@ class Dog(db.Model):
 
     def __repr__(self) -> str:
         return f"<Dog {self.name}>"
+    
+    # def to_dict() gets added by SerializerMixin

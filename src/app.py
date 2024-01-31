@@ -7,11 +7,18 @@ export FLASK_APP=src/app.py
 export FLASK_DEBUG=1
 export FLASK_RUN_PORT=5555
 flask run
+
+
+CRUD
+Create (POST)
+Read (GET)
+Update
+Delete
 """
 
-from flask import Flask
+from flask import Flask, request
 from flask_migrate import Migrate
-from models import db
+from models import db, Dog
 
 
 # initialize flask app
@@ -29,14 +36,35 @@ migrate = Migrate(app, db)
 def get_root():
     return "<h1>Hello</h1>", 200
 
-@app.route('/test')
-def test():
-    return {'test': "test is json"}, 200
+@app.route('/dogs', methods=['GET', 'POST'])
+def all_dogs():
+    if request.method == 'GET':
+        all_dogs = Dog.query.all()
+        results = []
+        for dog in all_dogs:
+            results.append(dog.to_dict())
+        return results, 200
+    elif request.method == 'POST':
+        # get json data from request
+        json_data = request.get_json()
+        # build new Dog obj
+        new_dog = Dog(
+            name=json_data.get('name'),
+            age=json_data.get('age'),
+            breed=json_data['breed']
+        )
+        # save new dog in db
+        db.session.add(new_dog)
+        db.session.commit()
+        return new_dog.to_dict(), 201
 
-@app.route('/testpost', methods=['POST'])
-def test_post():
-    return {'test post': 'this is a test'}, 200
+@app.route('/dogs/<int:id>')
+def get_dog_by_id(id):
+    dog = Dog.query.filter(Dog.id == id).first()
 
-@app.route('/param/<int:num>')
-def test_param(num):
-    return {'your param was': num}
+    if dog is None:
+        return {'error': 'dog not found'}, 404
+
+    return dog.to_dict(), 200
+
+
