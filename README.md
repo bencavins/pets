@@ -19,12 +19,12 @@
   - [ ] can optionally install `faker`
 
 ## APIs
-- [ ] create a /dogs route
-- [ ] add serializer for Dog (install `sqlalchemy-serializer`)
-- [ ] demo POSTman
-- [ ] create a /dogs/<int:id> route
-  - [ ] test for 404s
-- [ ] allow POST to /dogs
+- [x] create a /dogs route
+- [x] add serializer for Dog (install `sqlalchemy-serializer`)
+- [x] demo POSTman
+- [x] create a /dogs/<int:id> route
+  - [x] test for 404s
+- [x] allow POST to /dogs
 - [ ] add DELETE
 - [ ] add PATCH
 
