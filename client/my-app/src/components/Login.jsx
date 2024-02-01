@@ -23,9 +23,9 @@ export default function Login() {
     .then(resp => {
       if (resp.ok) {
         console.log('logged in!')
-        // navigate('/')  // redirect
+        navigate('/')  // redirect
       } else {
-        console.log('error!')
+        console.log('error logging in!')
         return Promise.reject(resp)
       }
     })

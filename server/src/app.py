@@ -47,7 +47,7 @@ def signup():
 
 @app.route('/logout', methods=['DELETE'])
 def logout():
-    session.pop('user_id')
+    session.pop('user_id', None)
     print(session)
     return {}, 204
 
