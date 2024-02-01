@@ -5,7 +5,7 @@
 - [x] create simple `app.py`
 - [x] show how to run app
 - [x] build some basic routes (with params)
-- [ ] add `.env` file for simplicity (need to install python-dotenv) and `.gitignore`
+- [x] add `.env` file for simplicity (need to install python-dotenv) and `.gitignore`
 
 ## SQLAlchemy & Alembic
 - [x] install `flask-sqlalchemy`
@@ -16,7 +16,7 @@
 - [x] run `flask db init`, `flask db migrate`, `flask db upgrade`
 - [x] add dogs and query dogs with flask shell
 - [x] write a seed script
-  - [ ] can optionally install `faker`
+  - [x] can optionally install `faker`
 
 ## APIs
 - [x] create a /dogs route
@@ -25,8 +25,8 @@
 - [x] create a /dogs/<int:id> route
   - [x] test for 404s
 - [x] allow POST to /dogs
-- [ ] add DELETE
-- [ ] add PATCH
+- [x] add DELETE
+- [x] add PATCH
 
 ## Constraints/Validations
 - [ ] Make Dog name required (discuss `nullable` and `unique`)
@@ -34,11 +34,11 @@
 - [ ] Add validation for name and age
 
 ## Relationships
-- [ ] add Owner class
-- [ ] add fk to Owner on Dog
-- [ ] rewrite seed script
+- [x] add Owner class
+- [x] add fk to Owner on Dog
+- [x] rewrite seed script
   - [ ] *tricky* talk about when ids get added
-- [ ] add relationship
+- [x] add relationship
 - [ ] add serialize_rules
 - [ ] add route for owners
 
