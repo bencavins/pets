@@ -12,7 +12,7 @@ export default function Logout() {
     .then(resp => {
       if (resp.ok) {
         setIsLoggedOut(true)
-        redirect('/')
+        // redirect('/')
       } else {
         setIsLoggedOut(false)
       }

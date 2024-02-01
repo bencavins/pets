@@ -1,24 +1,7 @@
-import { useEffect, useState } from "react"
-import { useLoaderData, useOutletContext } from "react-router-dom"
+import { useLoaderData } from "react-router-dom"
 
 export default function Home() {
-  const [user, setUser] = useState()
-  const data = useLoaderData()
-  console.log(data)
-  // console.log(user, setUser)
-
-  // useEffect(() => {
-  //   fetch('http://127.0.0.1:5555/authorized', {
-  //     method: 'GET',
-  //     credentials: 'include'
-  //   })
-  //   .then(resp => {
-  //     if (resp.ok) {
-  //       return resp.json()
-  //     }
-  //   })
-  //   .then(data => setUser(data))
-  // }, [])
+  const user = useLoaderData()
 
   return (
     <>

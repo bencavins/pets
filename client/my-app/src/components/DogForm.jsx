@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { useLoaderData } from "react-router-dom"
 
 export default function DogForm() {
   const blankForm = {
@@ -9,6 +10,7 @@ export default function DogForm() {
   const [formData, setFormData] = useState(blankForm)
   const [owners, setOwners] = useState([])
   const [error, setError] = useState()
+  const user = useLoaderData()
 
   useEffect(() => {
     fetch('http://127.0.0.1:5555/owners')
@@ -47,6 +49,10 @@ export default function DogForm() {
 
   function handleOwnerChange(event) {
     setFormData({...formData, 'owner_id': parseInt(event.target.value)})
+  }
+
+  if (!user.username) {
+    return <p>Must be logged in to view this page</p>
   }
 
   if (!owners) {
