@@ -54,6 +54,6 @@
 - [ ] install bcrypt
 - [ ] create a User class
   - [ ] setup password column with encryption
-- [ ] create login/signup/logout routes
+- [ ] create login/signup/logout routes (don't forget secret key)
 - [ ] create check session route
 - [ ] use check session in react app

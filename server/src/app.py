@@ -13,7 +13,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = os.environ.get('SECRET_KEY')
 db.init_app(app)
 migrate = Migrate(app, db)
-cors = CORS(app)
+cors = CORS(app, supports_credentials=True)
+# cors = CORS(app)
 
 
 @app.route('/')
@@ -28,7 +29,11 @@ def login():
     if not user:
         return {'error': 'user not found'}, 404
     
+    if not user.authenticate(data.get('password')):
+        return {'error': 'invalid password'}, 401
+    
     session['user_id'] = user.id
+    print(session)
     return user.to_dict(), 201
 
 @app.route('/signup', methods=['POST'])
@@ -43,10 +48,12 @@ def signup():
 @app.route('/logout', methods=['DELETE'])
 def logout():
     session.pop('user_id')
+    print(session)
     return {}, 204
 
 @app.route('/authorized')
 def is_authorized():
+    print(session)
     user_id = session.get('user_id')
     user = User.query.filter(User.id == user_id).first()
 
@@ -57,6 +64,7 @@ def is_authorized():
 
 @app.route('/dogs', methods=['GET', 'POST'])
 def get_all_dogs():
+    print(session)
     if request.method == 'GET':
         dogs = Dog.query.all()
         return [dog.to_dict() for dog in dogs], 200

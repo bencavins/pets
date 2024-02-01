@@ -5,6 +5,7 @@ import Home from './components/Home.jsx'
 import DogList from './components/DogList.jsx'
 import DogDetails from './components/DogDetails.jsx'
 import DogForm from './components/DogForm.jsx'
+import Login from './components/Login.jsx'
 import ErrorPage from './components/ErrorPage.jsx'
 import './index.css'
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
       {
         path: '/',
         element: <Home />
+      },
+      {
+        path: '/login',
+        element: <Login />
       },
       {
         path: '/dogs/:id',
