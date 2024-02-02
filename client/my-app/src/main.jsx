@@ -11,22 +11,6 @@ import ErrorPage from './components/ErrorPage.jsx'
 import './index.css'
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 
-async function userLoader({ request, params }) {
-  const res = await fetch('http://127.0.0.1:5555/authorized', {
-      method: 'GET',
-      credentials: 'include'
-    })
-    .then(resp => {
-      if (resp.ok) {
-        return resp.json()
-      } else {
-        return {}
-      }
-    })
-  console.log(res)
-  return res
-}
-
 const router = createBrowserRouter([
   {
     path: '/',
@@ -35,8 +19,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <Home />,
-        loader: userLoader
+        element: <Home />
       },
       {
         path: '/login',
@@ -48,18 +31,15 @@ const router = createBrowserRouter([
       },
       {
         path: '/dogs/:id',
-        element: <DogDetails />,
-        loader: userLoader
+        element: <DogDetails />
       },
       {
         path: '/dogs',
-        element: <DogList />,
-        loader: userLoader
+        element: <DogList />
       },
       {
         path: '/dogs/new',
-        element: <DogForm />,
-        loader: userLoader
+        element: <DogForm />
       }
     ]
   }

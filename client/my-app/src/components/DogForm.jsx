@@ -10,33 +10,32 @@ export default function DogForm() {
   const [formData, setFormData] = useState(blankForm)
   const [owners, setOwners] = useState([])
   const [error, setError] = useState()
-  const user = useLoaderData()
 
-  useEffect(() => {
-    fetch('http://127.0.0.1:5555/owners')
-    .then(resp => resp.json())
-    .then(data => setOwners(data))
-  }, [])
+  // useEffect(() => {
+  //   fetch('http://127.0.0.1:5555/owners')
+  //   .then(resp => resp.json())
+  //   .then(data => setOwners(data))
+  // }, [])
 
   function handleSubmit(event) {
     event.preventDefault()
-    fetch('http://127.0.0.1:5555/dogs', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(formData)
-    })
-    .then(resp => {
-      if (resp.ok) {
-        return resp.json()
-      } else {
-        return Promise.reject(resp)
-      }
-    })
-    .then(data => console.log(data))
-    .catch(resp => resp.json())
-    .then(errorData => setError(errorData))
+    // fetch('http://127.0.0.1:5555/dogs', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: JSON.stringify(formData)
+    // })
+    // .then(resp => {
+    //   if (resp.ok) {
+    //     return resp.json()
+    //   } else {
+    //     return Promise.reject(resp)
+    //   }
+    // })
+    // .then(data => console.log(data))
+    // .catch(resp => resp.json())
+    // .then(errorData => setError(errorData))
   }
 
   function handleNameChange(event) {
@@ -49,10 +48,6 @@ export default function DogForm() {
 
   function handleOwnerChange(event) {
     setFormData({...formData, 'owner_id': parseInt(event.target.value)})
-  }
-
-  if (!user.username) {
-    return <p>Must be logged in to view this page</p>
   }
 
   if (!owners) {
