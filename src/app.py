@@ -55,11 +55,16 @@ def all_dogs():
         # get json data from request
         json_data = request.get_json()
         # build new Dog obj
-        new_dog = Dog(
-            name=json_data.get('name'),
-            age=json_data.get('age'),
-            breed=json_data.get('breed')
-        )
+        try:
+            new_dog = Dog(
+                name=json_data.get('name'),
+                age=json_data.get('age'),
+                breed=json_data.get('breed')
+            )
+        except ValueError as e:
+            # return 400 bad request if ValueError is thrown (include error message in json)
+            return {'error': str(e)}, 400
+        
         # save new dog in db
         db.session.add(new_dog)
         db.session.commit()
