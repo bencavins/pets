@@ -29,9 +29,9 @@
 - [x] add PATCH
 
 ## Constraints/Validations
-- [ ] Make Dog name required (discuss `nullable` and `unique`)
-- [ ] Create a custom constraint for age (cannot be neg)
-- [ ] Add validation for name and age
+- [x] Make Dog name required (discuss `nullable` and `unique`)
+- [x] Create a custom constraint for age (cannot be neg)
+- [x] Add validation for name and age
 
 ## Relationships
 - [x] add Owner class
@@ -39,7 +39,7 @@
 - [x] rewrite seed script
   - [ ] *tricky* talk about when ids get added
 - [x] add relationship
-- [ ] add serialize_rules
+- [x] add serialize_rules
 - [ ] add route for owners
 
 ## Adding the Front-End
