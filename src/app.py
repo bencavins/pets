@@ -22,7 +22,8 @@ Delete
 
 from flask import Flask, request
 from flask_migrate import Migrate
-from models import db, Dog
+from flask_cors import CORS
+from models import db, Dog, Owner
 
 
 # initialize flask app
@@ -34,6 +35,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 # add the alembic plugin
 migrate = Migrate(app, db)
+CORS(app)
 
 
 @app.route('/')
@@ -59,7 +61,8 @@ def all_dogs():
             new_dog = Dog(
                 name=json_data.get('name'),
                 age=json_data.get('age'),
-                breed=json_data.get('breed')
+                breed=json_data.get('breed'),
+                owner_id=json_data.get('owner_id')
             )
         except ValueError as e:
             # return 400 bad request if ValueError is thrown (include error message in json)
@@ -111,3 +114,8 @@ def get_dog_by_id(id):
         db.session.commit()
         # serialize the dog and return a response
         return dog.to_dict(), 200
+    
+@app.route('/owners')
+def all_owners():
+    owners = Owner.query.all()
+    return [owner.to_dict() for owner in owners], 200

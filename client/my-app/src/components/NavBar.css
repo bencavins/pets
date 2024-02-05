@@ -1,0 +1,16 @@
+.nav-link{
+    display: inline-block;
+    box-sizing: border-box;
+    /* width: 60px; */
+    padding: 5px;
+    margin: 0 6px 6px;
+    background: purple;
+    text-decoration: none;
+    text-align: center;
+    font-size: min(10vw, 15px) ;
+    color: silver;
+}
+  
+.active {
+    color: greenyellow;
+}
