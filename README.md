@@ -43,12 +43,12 @@
 - [ ] add route for owners
 
 ## Adding the Front-End
-- [ ] create a simple react app with vite
-  - [ ] run `npm create vite@latest`
-  - [ ] run `npm react-router-dom`
-- [ ] set up a fetch
-- [ ] add CORS
-- [ ] set up form POST (with error handling)
+- [x] create a simple react app with vite
+  - [x] run `npm create vite@latest`
+  - [x] run `npm react-router-dom`
+- [x] set up a fetch
+- [x] add CORS
+- [x] set up form POST (with error handling)
 
 ## Auth
 - [ ] create a User class
