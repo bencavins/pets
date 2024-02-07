@@ -1,16 +1,8 @@
-import { useLoaderData, useParams } from "react-router-dom"
-import { useState, useEffect } from "react"
+import { useLoaderData, useOutletContext } from "react-router-dom"
 
 export default function DogDetails() {
-  const { id } = useParams()
-  const [dog, setDog] = useState()
-  const user = useLoaderData()
-
-  useEffect(() => {
-    fetch(`http://127.0.0.1:5555/dogs/${id}`)
-    .then(resp => resp.json())
-    .then(data => setDog(data))
-  }, [])
+  const [user] = useOutletContext()
+  const dog = useLoaderData()
 
   if (!user.username) {
     return <p>Must be logged in to view this page</p>

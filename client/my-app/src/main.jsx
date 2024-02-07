@@ -9,34 +9,25 @@ import Login from './components/Login.jsx'
 import Logout from './components/Logout.jsx'
 import ErrorPage from './components/ErrorPage.jsx'
 import './index.css'
+import { 
+  userLoader, 
+  dogListLoader, 
+  dogDetailsLoader,
+  ownersLoader 
+} from './loaders.js'
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 
-async function userLoader({ request, params }) {
-  const res = await fetch('http://127.0.0.1:5555/authorized', {
-      method: 'GET',
-      credentials: 'include'
-    })
-    .then(resp => {
-      if (resp.ok) {
-        return resp.json()
-      } else {
-        return {}
-      }
-    })
-  console.log(res)
-  return res
-}
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
     errorElement: <ErrorPage />,
+    loader: userLoader,
     children: [
       {
         path: '/',
-        element: <Home />,
-        loader: userLoader
+        element: <Home />
       },
       {
         path: '/login',
@@ -49,17 +40,17 @@ const router = createBrowserRouter([
       {
         path: '/dogs/:id',
         element: <DogDetails />,
-        loader: userLoader
+        loader: dogDetailsLoader
       },
       {
         path: '/dogs',
         element: <DogList />,
-        loader: userLoader
+        loader: dogListLoader
       },
       {
         path: '/dogs/new',
         element: <DogForm />,
-        loader: userLoader
+        loader: ownersLoader
       }
     ]
   }

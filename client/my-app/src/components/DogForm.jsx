@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react"
-import { useLoaderData } from "react-router-dom"
+import { useState } from "react"
+import { useLoaderData, useOutletContext } from "react-router-dom"
 
 export default function DogForm() {
   const blankForm = {
@@ -8,15 +8,9 @@ export default function DogForm() {
     'owner_id': null
   }
   const [formData, setFormData] = useState(blankForm)
-  const [owners, setOwners] = useState([])
   const [error, setError] = useState()
-  const user = useLoaderData()
-
-  useEffect(() => {
-    fetch('http://127.0.0.1:5555/owners')
-    .then(resp => resp.json())
-    .then(data => setOwners(data))
-  }, [])
+  const [user] = useOutletContext()
+  const owners = useLoaderData()
 
   function handleSubmit(event) {
     event.preventDefault()
@@ -72,7 +66,7 @@ export default function DogForm() {
       <label>Owner: </label>
       <select name="owner" onChange={handleOwnerChange} value={formData.owner_id}>
         <option value=""> -- </option>
-        {owners.map(owner => <option value={owner.id}>{owner.name}</option>)}
+        {owners.map(owner => <option key={owner.id} value={owner.id}>{owner.name}</option>)}
       </select><br />
       <input type="submit" />
     </form>

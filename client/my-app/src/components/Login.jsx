@@ -1,9 +1,8 @@
 import { useState } from "react"
-import { useNavigate } from 'react-router-dom'
 
 export default function Login() {
   const [error, setError] = useState()
-  const navigate = useNavigate()
+  const [msg, setMsg] = useState()
 
   function handleSubmit(event) {
     event.preventDefault()
@@ -22,10 +21,9 @@ export default function Login() {
     })
     .then(resp => {
       if (resp.ok) {
-        console.log('logged in!')
-        navigate('/')  // redirect
+        setMsg('Log in successful!')
       } else {
-        console.log('error logging in!')
+        setMsg('Log in failed!')
         return Promise.reject(resp)
       }
     })
@@ -37,6 +35,7 @@ export default function Login() {
 
   return (
     <>
+    {msg ? <p>{msg}</p> : null}
     {errorElement}
     <form onSubmit={handleSubmit}>
       <label>Username: </label>

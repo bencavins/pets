@@ -1,12 +1,12 @@
-import { useLoaderData } from "react-router-dom"
+import { useOutletContext } from "react-router-dom"
 
 export default function Home() {
-  const user = useLoaderData()
+  const [user] = useOutletContext()
 
   return (
     <>
     <h2>Home Page</h2>
-    {user ? <p>Welcome {user.username}!</p> : null}
+    {user.username ? <p>Welcome {user.username}!</p> : null}
     </>
   )
 }
