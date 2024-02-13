@@ -19,11 +19,12 @@ Read (GET)
 Update
 Delete
 """
+import os
 
-from flask import Flask, request
+from flask import Flask, request, session
 from flask_migrate import Migrate
 from flask_cors import CORS
-from models import db, Dog, Owner
+from models import db, Dog, Owner, User
 
 
 # initialize flask app
@@ -31,6 +32,8 @@ app = Flask(__name__)
 # tell sqlalchemy how to connect to our db
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# secret key needed for encrypting cookies
+app.secret_key = os.environ.get('SECRET_KEY')
 # add sqlalchemy plugin
 db.init_app(app)
 # add the alembic plugin
@@ -41,6 +44,33 @@ CORS(app)
 @app.route('/')
 def get_root():
     return "<h1>Hello</h1>", 200
+
+@app.route('/login')
+def login():
+    json_data = request.get_json()
+
+    user = User.query.filter(User.username == json_data.get('username')).first()
+
+    if not user:
+        return {'error': 'user not found'}, 404
+    
+    if not user.authenticate(json_data.get('password')):
+        return {'error': 'invalid password'}, 401
+    
+    session['user_id'] = user.id  # set cookie
+    return user.to_dict(), 200
+
+@app.route('/signup')
+def signup():
+    pass
+
+@app.route('/logout')
+def logout():
+    pass
+
+@app.route('/check_session')
+def check_session():
+    pass
 
 @app.route('/dogs', methods=['GET', 'POST'])
 def all_dogs():
