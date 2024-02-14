@@ -9,13 +9,21 @@ import Login from './components/Login.jsx'
 import Logout from './components/Logout.jsx'
 import ErrorPage from './components/ErrorPage.jsx'
 import './index.css'
+import { 
+  userLoader, 
+  dogListLoader, 
+  dogDetailsLoader,
+  ownersLoader 
+} from './loaders.js'
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
+
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
     errorElement: <ErrorPage />,
+    loader: userLoader,
     children: [
       {
         path: '/',
@@ -31,15 +39,18 @@ const router = createBrowserRouter([
       },
       {
         path: '/dogs/:id',
-        element: <DogDetails />
+        element: <DogDetails />,
+        loader: dogDetailsLoader
       },
       {
         path: '/dogs',
-        element: <DogList />
+        element: <DogList />,
+        loader: dogListLoader
       },
       {
         path: '/dogs/new',
-        element: <DogForm />
+        element: <DogForm />,
+        loader: ownersLoader
       }
     ]
   }

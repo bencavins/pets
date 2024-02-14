@@ -5,22 +5,22 @@ export default function NavBar() {
 
   return (
     <nav>
-      <NavLink to="/" className="nav-link">
+      <NavLink reloadDocument to="/" className="nav-link">
         Home
       </NavLink>
-      <NavLink end to="/dogs" className="nav-link">
+      <NavLink reloadDocument end to="/dogs" className="nav-link">
         Dogs
       </NavLink>
-      <NavLink to="/owners" className="nav-link">
+      <NavLink reloadDocument to="/owners" className="nav-link">
         Owners
       </NavLink>
-      <NavLink to="/dogs/new" className="nav-link">
+      <NavLink reloadDocument to="/dogs/new" className="nav-link">
         New Dog
       </NavLink>
-      <NavLink to="/login" className="nav-link">
+      <NavLink reloadDocument to="/login" className="nav-link">
         Login
       </NavLink>
-      <NavLink to="/logout" className="nav-link">
+      <NavLink reloadDocument to="/logout" className="nav-link">
         Logout
       </NavLink>
     </nav>

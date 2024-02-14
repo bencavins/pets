@@ -38,14 +38,14 @@ app.secret_key = os.environ.get('SECRET_KEY')
 db.init_app(app)
 # add the alembic plugin
 migrate = Migrate(app, db)
-CORS(app)
+CORS(app, supports_credentials=True)
 
 
 @app.route('/')
 def get_root():
     return "<h1>Hello</h1>", 200
 
-@app.route('/login')
+@app.route('/login', methods=['POST'])
 def login():
     json_data = request.get_json()
 
@@ -60,17 +60,32 @@ def login():
     session['user_id'] = user.id  # set cookie
     return user.to_dict(), 200
 
-@app.route('/signup')
+@app.route('/signup', methods=['POST'])
 def signup():
-    pass
+    json_data = request.get_json()
+    new_user = User(username=json_data.get('username'))
+    new_user.password_hash = json_data.get('password')
 
-@app.route('/logout')
+    db.session.add(new_user)
+    db.session.commit()
+
+    return new_user.to_dict(), 201
+
+@app.route('/logout', methods=['DELETE'])
 def logout():
-    pass
+    session.pop('user_id', None)
+    return {}, 204
 
 @app.route('/check_session')
 def check_session():
-    pass
+    user_id = session.get('user_id')
+
+    user = User.query.filter(User.id == user_id).first()
+
+    if not user:
+        return {'error': 'unauthorized'}, 401
+    
+    return user.to_dict(), 200
 
 @app.route('/dogs', methods=['GET', 'POST'])
 def all_dogs():
