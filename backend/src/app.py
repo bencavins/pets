@@ -4,9 +4,12 @@ flask --app src/app.py --debug run --port 5555
 
 
 We can also use environment variables:
-export FLASK_APP=src/app.py
+export FLASK_APP=src/app.py  # this is a path, make sure it is correct!
 export FLASK_RUN_PORT=5555
 export FLASK_DEBUG=1
+
+Then we just need to do:
+flask run
 """
 
 from flask import Flask
