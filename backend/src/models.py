@@ -8,6 +8,7 @@ flask db upgrade  # apply db changes from revision file
 
 
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy import MetaData
 
 
@@ -24,7 +25,7 @@ db = SQLAlchemy(metadata=MetaData(naming_convention=convention))
 
 
 
-class Dog(db.Model):
+class Dog(db.Model, SerializerMixin):
     __tablename__ = 'dogs'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -34,7 +35,14 @@ class Dog(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey('owners.id'))  # needs to be tablename.colname as a string
 
     # relationship between Dog -> Owner
-    owner = db.relationship('Owner', back_populates='dogs')
+    # owner = db.relationship('Owner', back_populates='dogs')
+
+    # serializer adds this method:
+    # def to_dict(self):
+    #     return {
+    #         'name': self.name,
+    #         'age': self.age,
+    #     }
 
     def __repr__(self) -> str:
         return f"<Dog {self.name} {self.age}>"
@@ -47,7 +55,7 @@ class Owner(db.Model):
     name = db.Column(db.String)
 
     # relationship between Owner -> Dog
-    dogs = db.relationship('Dog', back_populates='owner')
+    # dogs = db.relationship('Dog', back_populates='owner')
 
     def __repr__(self) -> str:
         return f"<Owner {self.name}>"
