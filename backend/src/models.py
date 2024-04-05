@@ -35,7 +35,9 @@ class Dog(db.Model, SerializerMixin):
     owner_id = db.Column(db.Integer, db.ForeignKey('owners.id'))  # needs to be tablename.colname as a string
 
     # relationship between Dog -> Owner
-    # owner = db.relationship('Owner', back_populates='dogs')
+    owner = db.relationship('Owner', back_populates='dogs')
+
+    serialize_rules = ['-owner.dogs']
 
     # serializer adds this method:
     # def to_dict(self):
@@ -48,14 +50,16 @@ class Dog(db.Model, SerializerMixin):
         return f"<Dog {self.name} {self.age}>"
 
 
-class Owner(db.Model):
+class Owner(db.Model, SerializerMixin):
     __tablename__ = 'owners'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
 
     # relationship between Owner -> Dog
-    # dogs = db.relationship('Dog', back_populates='owner')
+    dogs = db.relationship('Dog', back_populates='owner')
+
+    serialize_rules = ['-dogs.owner']
 
     def __repr__(self) -> str:
         return f"<Owner {self.name}>"
