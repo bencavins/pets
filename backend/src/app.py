@@ -11,17 +11,22 @@ export FLASK_DEBUG=1
 Then we just need to do:
 flask run
 """
+import os
 
-from flask import Flask, request
+from flask import Flask, request, session
 from flask_migrate import Migrate
 
-from models import db, Dog
+from models import db, Dog, User
 
 
 app = Flask(__name__)
 # set the db connection string
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URI']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# set a secret key (needed for browser cookies)
+app.secret_key = os.environ['SECRET_KEY']
+
 # initialize the sqlalchemy db
 db.init_app(app)
 # initialize alembic (migration framework)
@@ -35,6 +40,70 @@ def root():
 @app.route('/helloworld')
 def hello_world():
     return {'message': 'goodbye world!'}
+
+# login
+@app.route('/login', methods=['POST'])
+def login():
+    json_data = request.get_json()
+
+    # check that user exists
+    user = User.query.filter(User.username == json_data.get('username')).first()
+    if not user:
+        return {'error': 'user not found'}, 404
+    
+    # check the user's password
+    if not user.authenticate(json_data.get('password')):
+        return {'error': 'login failed'}, 401
+    
+    # store a cookie in the browser
+    session['user_id'] = user.id
+
+    # return a response
+    return user.to_dict(), 200
+
+# logout
+@app.route('/logout', methods=['DELETE'])
+def logout():
+    # delete the user_id cookie
+    session.pop('user_id', None)
+    return {}, 204
+
+# signup
+@app.route('/signup', methods=['POST'])
+def signup():
+    # get the json data
+    json_data = request.get_json()
+
+    user = User.query.filter(User.username == json_data.get('username')).first()
+    if user:
+        return {'error': 'user already exists'}, 400
+
+    # create a new user
+    new_user = User(
+        username=json_data.get('username'),
+        password=json_data.get('password'),
+    )
+
+    # add to db
+    db.session.add(new_user)
+    db.session.commit()
+
+    return new_user.to_dict(), 201
+
+# check_session (is user currently logged in?)
+@app.route('/check_session', methods=['GET'])
+def check_session():
+    # get user id from the browser cookies
+    user_id = session.get('user_id')
+
+    # query the db to make sure that user id is valid
+    user = User.query.filter(User.id == user_id).first()
+
+    # if the user isn't valid, send error
+    if not user:
+        return {'error': 'unauthorized'}, 401
+    else:
+        return user.to_dict(), 200
 
 @app.route('/dogs', methods=['GET', 'POST'])
 def all_dogs():
@@ -55,12 +124,15 @@ def all_dogs():
         json_data = request.get_json()
 
         # build new dog obj using info from json_data
-        new_dog = Dog(
-            name=json_data.get('name'),
-            age=json_data.get('age'),
-            breed=json_data.get('breed'),
-            owner_id=json_data.get('owner_id')
-        )
+        try:
+            new_dog = Dog(
+                name=json_data.get('name'),
+                age=json_data.get('age'),
+                breed=json_data.get('breed'),
+                owner_id=json_data.get('owner_id')
+            )
+        except ValueError as e:
+            return {'error': str(e)}, 400
 
         # save to db
         db.session.add(new_dog)
