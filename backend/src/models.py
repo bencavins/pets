@@ -42,7 +42,7 @@ class Dog(db.Model, SerializerMixin):
 
     serialize_rules = ['-owner.dogs']
 
-    @validates('name', 'breed')
+    @validates('name')
     def validates_not_blank(self, key, new_value):
         if len(new_value) == 0:
             raise ValueError(f'{key} cannot be blank')

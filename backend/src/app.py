@@ -15,8 +15,9 @@ import os
 
 from flask import Flask, request, session
 from flask_migrate import Migrate
+from flask_cors import CORS
 
-from models import db, Dog, User
+from models import db, Dog, User, Owner
 
 
 app = Flask(__name__)
@@ -31,6 +32,8 @@ app.secret_key = os.environ['SECRET_KEY']
 db.init_app(app)
 # initialize alembic (migration framework)
 Migrate(app, db)
+# initialize CORS
+CORS(app, supports_credentials=True)
 
 
 @app.route("/")
@@ -187,4 +190,17 @@ def dog_by_id(id):
 
         # return a response
         return dog_obj.to_dict(), 200
+
+@app.route('/owners', methods=['GET'])
+def all_owners():
+    return [owner.to_dict() for owner in Owner.query]
+    
+@app.route('/owners/<int:id>', methods=['GET'])
+def owner_by_id(id):
+    owner = Owner.query.filter(Owner.id == id).first()
+    
+    if not owner:
+        return {'error': 'owner not found'}, 404
+    
+    return owner.to_dict(), 200
     
