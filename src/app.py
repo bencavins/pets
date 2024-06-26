@@ -9,7 +9,13 @@
 # export FLASK_RUN_PORT=5555
 # export FLASK_DEBUG=1
 # flask run
-from flask import Flask, make_response, jsonify
+
+
+# CRUD == Create, Read, Update, Delete
+# HTTP verbs: POST, GET, PATCH (PUT), DELETE
+# ReST
+
+from flask import Flask, request, make_response, jsonify
 from models import db, Pet, Owner
 from flask_migrate import Migrate
 
@@ -29,21 +35,70 @@ def hello():
     return web_resp
 
 
-@app.route('/test')
-def test():
-    return {'result': 'test'}, 200
-
-
-# we can add parameters to our routes
-@app.route('/upper/<string:word>')
-def upper(word):
-    new_word = word.upper()
-    return {'result': new_word}, 200
-
-
 @app.route('/dogs')
 def dogs():
     # query db for all dog pets
     all_dogs = Pet.query.filter(Pet.type == 'dog').all()
     all_dog_dicts = [d.to_dict() for d in all_dogs]  # turn all dog objs into dicts
     return all_dog_dicts, 200
+
+
+@app.route('/pets', methods=['GET', 'POST'])
+def all_pets():
+    if request.method == 'GET':
+        pets = Pet.query.all()
+        return [p.to_dict() for p in pets], 200
+    elif request.method == 'POST':
+        # grab json data from request (as dict)
+        data = request.get_json()
+
+        # build new pet obj
+        new_pet = Pet(
+            name=data.get('name'),
+            age=data.get('age'),
+            type=data.get('type'),
+            owner_id=data.get('owner_id')
+        )
+
+        # save new pet obj to the db
+        db.session.add(new_pet)
+        db.session.commit()
+
+        return new_pet.to_dict(), 201
+
+
+@app.route('/pets/<int:id>', methods=['GET', 'PATCH', 'DELETE'])
+def pet_by_id(id):
+    pet = Pet.query.filter(Pet.id == id).first()
+
+    if not pet:
+        return {'error': 'pet not found'}, 404
+    
+    if request.method == 'GET':
+        return pet.to_dict(), 200
+    elif request.method == 'PATCH':
+        # get json data from request
+        data = request.get_json()
+
+        # option 1, check every single field
+        if 'name' in data:
+            pet.name = data['name']
+        if 'age' in data:
+            pet.age = data['age']
+        if 'type' in data:
+            pet.type = data['type']
+
+        # option 2, loop through json keys and use setattr to update the attribute on the object
+        for field in data:
+            # pet.field = data[field]  # this doesn't work
+            setattr(pet, field, data[field])
+
+        db.session.add(pet)
+        db.session.commit()
+
+        return pet.to_dict(), 200
+    elif request.method == 'DELETE':
+        db.session.delete(pet)
+        db.session.commit()
+
+        return {}, 204
