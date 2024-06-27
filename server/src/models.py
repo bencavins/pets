@@ -46,7 +46,7 @@ class Pet(db.Model, SerializerMixin):
     __tablename__ = 'pets'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable=False, unqiue=True)
+    name = db.Column(db.String, nullable=False)
     age = db.Column(db.Integer)
     type = db.Column(db.String)
     owner_id = db.Column(db.Integer, db.ForeignKey('owners.id'))

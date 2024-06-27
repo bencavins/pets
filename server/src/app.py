@@ -18,6 +18,7 @@
 from flask import Flask, request, make_response, jsonify
 from models import db, Pet, Owner
 from flask_migrate import Migrate
+from flask_cors import CORS
 
 
 app = Flask(__name__)
@@ -26,6 +27,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # optional performance thi
 
 db.init_app(app)  # link sqlalchemy with flask
 Migrate(app, db)  # set up db migration tool (alembic)
+CORS(app)  # set up cors
 
 
 @app.route('/')
