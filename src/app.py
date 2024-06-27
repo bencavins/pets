@@ -53,12 +53,16 @@ def all_pets():
         data = request.get_json()
 
         # build new pet obj
-        new_pet = Pet(
-            name=data.get('name'),
-            age=data.get('age'),
-            type=data.get('type'),
-            owner_id=data.get('owner_id')
-        )
+        try:  # try to run this block of code
+            new_pet = Pet(
+                name=data.get('name'),
+                age=data.get('age'),
+                type=data.get('type'),
+                owner_id=data.get('owner_id')
+            )
+        except ValueError as e:
+            # if a ValueError is raise above, run this code
+            return {'error': str(e)}, 400
 
         # save new pet obj to the db
         db.session.add(new_pet)
@@ -81,17 +85,21 @@ def pet_by_id(id):
         data = request.get_json()
 
         # option 1, check every single field
-        if 'name' in data:
-            pet.name = data['name']
-        if 'age' in data:
-            pet.age = data['age']
-        if 'type' in data:
-            pet.type = data['type']
+        # if 'name' in data:
+        #     pet.name = data['name']
+        # if 'age' in data:
+        #     pet.age = data['age']
+        # if 'type' in data:
+        #     pet.type = data['type']
 
         # option 2, loop through json keys and use setattr to update the attribute on the object
         for field in data:
             # pet.field = data[field]  # this doesn't work
-            setattr(pet, field, data[field])
+            try:
+                setattr(pet, field, data[field])
+            except ValueError as e:
+                return {'error': str(e)}, 400
+
 
         db.session.add(pet)
         db.session.commit()
