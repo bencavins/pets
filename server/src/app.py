@@ -1,5 +1,5 @@
 # our main flask app
-# API == Application Program Interface
+# API == Application Programing Interface
 
 # can start flask with
 # flask --app src/app.py run --port 5555 --debug
@@ -47,6 +47,8 @@ def dogs():
 
 @app.route('/pets', methods=['GET', 'POST'])
 def all_pets():
+    t = get_all_owners()
+    print(t[0])
     if request.method == 'GET':
         pets = Pet.query.all()
         return [p.to_dict() for p in pets], 200
@@ -112,3 +114,13 @@ def pet_by_id(id):
         db.session.commit()
 
         return {}, 204
+
+
+@app.get('/owners')  # @app.route('/owners', methods=['GET'])
+def get_all_owners():
+    owners = Owner.query.all()
+    return [o.to_dict() for o in owners], 200
+
+@app.post('/owners') # @app.route('/owners', methods=['POST'])
+def post_owner(): 
+    pass

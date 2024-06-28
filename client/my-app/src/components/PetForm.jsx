@@ -15,7 +15,7 @@ export default function DogForm() {
 
   function handleSubmit(event) {
     event.preventDefault()
-    fetch('http://127.0.0.1:5555/pets', { 
+    fetch('http://127.0.0.1:5555/pets', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -68,7 +68,7 @@ export default function DogForm() {
       <input name="name" type="text" onChange={handleNameChange} value={formData.name} /><br />
       <label>Age: </label>
       <input name="age" type="number" onChange={handleAgeChange} value={formData.age} /><br />
-      <lable>Type: </lable>
+      <label>Type: </label>
       <input name="type" type="text" onChange={handleTypeChange} value={formData.type} /><br />
       <label>Owner: </label>
       <select name="owner" onChange={handleOwnerChange} value={formData.owner_id}>
