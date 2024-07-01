@@ -11,6 +11,7 @@ flask-migrate = "*"
 sqlalchemy-serializer = "*"
 flask-cors = "*"
 requests = "*"
+flask-bcrypt = "*"
 
 [dev-packages]
 

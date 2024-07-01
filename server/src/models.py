@@ -28,6 +28,8 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.orm import validates
+from flask_bcrypt import Bcrypt
+from sqlalchemy.ext.hybrid import hybrid_property
 
 
 convention = {
@@ -40,6 +42,7 @@ convention = {
 
 
 db = SQLAlchemy(metadata=MetaData(naming_convention=convention))
+bcrypt = Bcrypt()
 
 
 class Pet(db.Model, SerializerMixin):
@@ -93,3 +96,25 @@ class Owner(db.Model, SerializerMixin):
 
     def __repr__(self) -> str:
         return f"<Owner {self.name}>"
+    
+class User(db.Model, SerializerMixin):
+    __tablename__ = 'users'
+
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String, unique=True, nullable=False)
+    _password = db.Column(db.String, nullable=False)
+
+    @hybrid_property
+    def password(self):
+        return self._password
+    
+    @password.setter
+    def password(self, new_password):
+        hash = bcrypt.generate_password_hash(new_password.encode('utf-8'))
+        self._password = hash
+
+    def authenticate(self, password):
+        return bcrypt.check_password_hash(self._password, password.encode('utf-8'))
+
+    def __repr__(self) -> str:
+        return f"<User {self.username}>"

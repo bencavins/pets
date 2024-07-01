@@ -15,15 +15,18 @@
 # HTTP verbs: POST, GET, PATCH (PUT), DELETE
 # ReST
 
-from flask import Flask, request, make_response, jsonify
-from models import db, Pet, Owner
+import os
+from flask import Flask, request, make_response, jsonify, session
+from models import db, Pet, Owner, User
 from flask_migrate import Migrate
 from flask_cors import CORS
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'  # how to connect to the db
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URI']  # how to connect to the db
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # optional performance thing
+app.secret_key = os.environ['SECRET_KEY'] # grab the secret key from env variables
+
 
 db.init_app(app)  # link sqlalchemy with flask
 Migrate(app, db)  # set up db migration tool (alembic)
@@ -44,6 +47,47 @@ def dogs():
     all_dog_dicts = [d.to_dict() for d in all_dogs]  # turn all dog objs into dicts
     return all_dog_dicts, 200
 
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()  # get user data
+
+    # check if the user exists
+    user = User.query.filter(User.username == data['username']).first()
+    if not user:
+        return {'error': 'login failed'}, 401
+    
+    # check if password can generate the same hash
+    if not user.authenticate(data['password']):
+        return {'error': 'login failed'}, 401
+    
+    # set browser cookie
+    session['user_id'] = user.id
+
+    return user.to_dict(), 200
+
+@app.route('/signup')
+def signup():
+    pass
+
+@app.route('/logout')
+def logout():
+    pass
+
+@app.route('/check_session')
+def check_session():
+    # get the cookie
+    user_id = session.get('user_id')
+
+    if not user_id:
+        # no cookie set, user is not logged in
+        return {'error': 'authorization failed'}, 401
+    
+    user = User.query.filter(User.id == user_id).first()
+    if not user:
+        # cookie is invalid
+        return {'error': 'authorization failed'}, 401
+    
+    return {'message': "authorization success"}, 200
 
 @app.route('/pets', methods=['GET', 'POST'])
 def all_pets():
