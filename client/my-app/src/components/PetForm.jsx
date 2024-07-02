@@ -10,7 +10,7 @@ export default function DogForm() {
   }
   const [formData, setFormData] = useState(blankForm)
   const [error, setError] = useState()
-  // const [user] = useOutletContext()
+  const [user] = useOutletContext()
   const owners = useLoaderData()
 
   function handleSubmit(event) {
@@ -50,9 +50,9 @@ export default function DogForm() {
     setFormData({...formData, 'owner_id': parseInt(event.target.value)})
   }
 
-  // if (!user || !user.username) {
-  //   return <p>Must be logged in to view this page</p>
-  // }
+  if (!user || !user.username) {
+    return <p>Must be logged in to view this page</p>
+  }
 
   if (!owners) {
     return <p>Loading...</p>

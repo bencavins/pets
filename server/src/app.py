@@ -15,6 +15,17 @@
 # HTTP verbs: POST, GET, PATCH (PUT), DELETE
 # ReST
 
+# how to set up .env file
+# pipenv install python-dotenv
+# create a .env where the Pipfile is
+# add ".env" to .gitignore (create .gitignore if not already exists)
+# add keys to .env file (ex: FLASK_APP=src/app.py)
+# import into python with:
+# import os
+# os.environ['KEY_NAME']
+
+# create a secret key: python -c 'import os; print(os.urandom(16))'
+
 import os
 from flask import Flask, request, make_response, jsonify, session
 from models import db, Pet, Owner, User
@@ -30,7 +41,7 @@ app.secret_key = os.environ['SECRET_KEY'] # grab the secret key from env variabl
 
 db.init_app(app)  # link sqlalchemy with flask
 Migrate(app, db)  # set up db migration tool (alembic)
-CORS(app)  # set up cors
+CORS(app, supports_credentials=True)  # set up cors
 
 
 @app.route('/')
@@ -65,13 +76,29 @@ def login():
 
     return user.to_dict(), 200
 
-@app.route('/signup')
+@app.route('/signup', methods=['POST'])
 def signup():
-    pass
+    data = request.get_json()
 
-@app.route('/logout')
+    # check if the user already exists
+    user = User.query.filter(User.username == data['username']).first()
+    if user:
+        return {'error': 'username already exists'}, 400
+
+    new_user = User(
+        username=data['username'], 
+        password=data['password']
+    )
+
+    db.session.add(new_user)
+    db.session.commit()
+
+    return new_user.to_dict(), 201
+
+@app.route('/logout', methods=['DELETE'])
 def logout():
-    pass
+    session.pop('user_id', None)  # remove the login cookie (None prevents the key error)
+    return {}, 204
 
 @app.route('/check_session')
 def check_session():
@@ -87,7 +114,7 @@ def check_session():
         # cookie is invalid
         return {'error': 'authorization failed'}, 401
     
-    return {'message': "authorization success"}, 200
+    return user.to_dict(), 200
 
 @app.route('/pets', methods=['GET', 'POST'])
 def all_pets():

@@ -1,12 +1,12 @@
 import { useLoaderData, useOutletContext } from "react-router-dom"
 
 export default function DogDetails() {
-  // const [user] = useOutletContext()
+  const [user] = useOutletContext()
   const pet = useLoaderData()
 
-  // if (!user.username) {
-  //   return <p>Must be logged in to view this page</p>
-  // }
+  if (!user.username) {
+    return <p>Must be logged in to view this page</p>
+  }
 
   if (!pet) {
     return <p>Loading...</p>
