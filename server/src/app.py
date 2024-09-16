@@ -3,13 +3,22 @@
 # flask --app src/app.py run --port 5555 --debug
 
 from flask import Flask
+from flask_migrate import Migrate
+from models import db, Pet
 
 
 # initialize our flask app
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# initialize sqlalchemy plugin with flask
+db.init_app(app)
+# initialize Alembic (aka flask migrate)
+Migrate(app, db)
 
 
-# define your routes
+# define your routes (flask calls these views)
 @app.route('/')
 def root():
     # returning an html response
@@ -38,6 +47,7 @@ def say_hello(name):
     return {'hello': name.upper()}, 200
 
 
-@app.route('/plants/<int:id>')
+@app.route('/pets/<int:id>')
 def plant_by_id(id):
-    return {'name': 'sunflower', 'id': id}, 200
+    pet = Pet.query.filter(Pet.id == id).first()
+    return pet.to_dict(), 200
