@@ -42,6 +42,7 @@ delete a pet
 """
 
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy_serializer import SerializerMixin
 
 
 # init sqlalchemy object
@@ -49,7 +50,7 @@ db = SQLAlchemy()
 
 
 # create a new class/model
-class Pet(db.Model):
+class Pet(db.Model, SerializerMixin):
     __tablename__ = 'pets'  # tablename is required
 
     # define columns on our table
@@ -58,13 +59,8 @@ class Pet(db.Model):
     age = db.Column(db.Integer)
     type = db.Column(db.String)
 
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'name': self.name,
-            'age': self.age,
-            'type': self.type
-        }
+    # to_dict() method gets added by SerializerMixIn
+    # def to_dict(self):
 
     def __repr__(self) -> str:
         return f'<Pet {self.id} {self.name} {self.age}>'
