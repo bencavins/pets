@@ -1,17 +1,25 @@
-from models import db, Pet
+from models import db, Pet, Owner
 from app import app
 
 
 def run():
     # delete all pet data
     Pet.query.delete()
+    Owner.query.delete()
+
+    # add a couple owners
+    alice = Owner(name='alice')
+    bob = Owner(name='bob')
+
+    db.session.add_all([alice, bob])
+    db.session.commit()
 
     # create some pet objects
     pets = [
-        Pet(name='fido', age=3, type='dog'),
-        Pet(name='rex', age=6, type='dog'),
-        Pet(name='angie', age=13, type='cat'),
-        Pet(name='tweety', age=3, type='bird'),
+        Pet(name='fido', age=3, type='dog', owner=alice),
+        Pet(name='rex', age=6, type='dog', owner=bob),
+        Pet(name='angie', age=13, type='cat', owner=bob),
+        Pet(name='tweety', age=3, type='bird', owner=alice),
     ]
 
     # add all pets to the session

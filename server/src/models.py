@@ -43,10 +43,21 @@ delete a pet
 
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_serializer import SerializerMixin
+from sqlalchemy import MetaData
+
+
+# naming convention for db constraints (fixes an alembic bug)
+convention = {
+    "ix": "ix_%(column_0_label)s",
+    "uq": "uq_%(table_name)s_%(column_0_name)s",
+    "ck": "ck_%(table_name)s_%(constraint_name)s",
+    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+    "pk": "pk_%(table_name)s"
+}
 
 
 # init sqlalchemy object
-db = SQLAlchemy()
+db = SQLAlchemy(metadata=MetaData(naming_convention=convention))
 
 
 # create a new class/model
@@ -58,9 +69,28 @@ class Pet(db.Model, SerializerMixin):
     name = db.Column(db.String)
     age = db.Column(db.Integer)
     type = db.Column(db.String)
+    owner_id = db.Column(db.Integer, db.ForeignKey('owners.id'))  # fk for owners.id
 
-    # to_dict() method gets added by SerializerMixIn
-    # def to_dict(self):
+    # relationship needs the class name (as a str)
+    owner = db.relationship('Owner', back_populates='pets')
+
+    # serialization rules
+    serialize_rules = ['-owner.pets', '-owner_id']  # -owner_id is optional
 
     def __repr__(self) -> str:
         return f'<Pet {self.id} {self.name} {self.age}>'
+    
+
+class Owner(db.Model, SerializerMixin):
+    __tablename__ = 'owners'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+
+    pets = db.relationship('Pet', back_populates='owner')
+
+    serialize_rules = ['-pets.owner']
+
+    def __repr__(self) -> str:
+        return f'<Owner {self.id} {self.name}>'
+
