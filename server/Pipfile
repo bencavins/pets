@@ -9,6 +9,7 @@ flask-sqlalchemy = "*"
 flask-migrate = "*"
 importlib-metadata = "*"
 sqlalchemy-serializer = "*"
+python-dotenv = "*"
 
 [dev-packages]
 

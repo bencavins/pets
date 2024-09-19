@@ -44,6 +44,12 @@ delete a pet
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy import MetaData
+from sqlalchemy.orm import validates
+
+
+
+class PetException(Exception):
+    pass
 
 
 # naming convention for db constraints (fixes an alembic bug)
@@ -64,9 +70,11 @@ db = SQLAlchemy(metadata=MetaData(naming_convention=convention))
 class Pet(db.Model, SerializerMixin):
     __tablename__ = 'pets'  # tablename is required
 
+    __table_args__ = (db.CheckConstraint('age >= 0', name='ck_age_not_neg'), )
+
     # define columns on our table
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
+    name = db.Column(db.String, nullable=False)
     age = db.Column(db.Integer)
     type = db.Column(db.String)
     owner_id = db.Column(db.Integer, db.ForeignKey('owners.id'))  # fk for owners.id
@@ -75,7 +83,14 @@ class Pet(db.Model, SerializerMixin):
     owner = db.relationship('Owner', back_populates='pets')
 
     # serialization rules
-    serialize_rules = ['-owner.pets', '-owner_id']  # -owner_id is optional
+    serialize_rules = ('-owner.pets',) # -owner_id is optional
+    # serialize_only = ['name']
+
+    @validates('age')
+    def validates_age(self, key, new_age):
+        if new_age < 0:
+            raise PetException('age cannot be negative')
+        return new_age  # similar to self._age = new_age
 
     def __repr__(self) -> str:
         return f'<Pet {self.id} {self.name} {self.age}>'
@@ -85,7 +100,7 @@ class Owner(db.Model, SerializerMixin):
     __tablename__ = 'owners'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
+    name = db.Column(db.String, unique=True)
 
     pets = db.relationship('Pet', back_populates='owner')
 

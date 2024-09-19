@@ -7,14 +7,16 @@
 # REST == Representational State Transfer
 #   - useful design pattern for APIs
 
+import os
+import traceback
 from flask import Flask, request
 from flask_migrate import Migrate
-from models import db, Pet
+from models import db, Pet, PetException
 
 
 # initialize our flask app
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URI']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # initialize sqlalchemy plugin with flask
@@ -52,11 +54,16 @@ def say_hello(name):
     return {'hello': name.upper()}, 200
 
 
-@app.route('/pets', methods=['GET', 'POST'])
+@app.route('/api/pets', methods=['GET', 'POST'])
 def all_pets():
     # check the method of the request
     if request.method == 'GET':
-        pets = Pet.query.all()
+        desc = request.args.get('desc')
+
+        if desc == 'true':
+            pets = Pet.query.order_by(Pet.name.desc()).all()
+        else:
+            pets = Pet.query.order_by(Pet.name).all()
         return [pet.to_dict() for pet in pets], 200
     elif request.method == 'POST':
         # get json data from the web request
@@ -66,12 +73,16 @@ def all_pets():
         if 'name' not in data:
             return {'error': 'name is required'}, 400
 
-        # build a new pet obj using info from json data
-        new_pet = Pet(
-            name=data.get('name'),
-            age=data.get('age'),
-            type=data.get('type')
-        )
+        try:
+            # build a new pet obj using info from json data
+            new_pet = Pet(
+                name=data.get('name'),
+                age=data.get('age'),
+                type=data.get('type')
+            )
+        except PetException as e:
+            print(traceback.format_exc())
+            return {'error': str(e)}, 400
 
         # save to db
         db.session.add(new_pet)
@@ -81,7 +92,7 @@ def all_pets():
         return new_pet.to_dict(), 201
 
 
-@app.route('/pets/<int:id>', methods=['GET', 'PATCH', 'DELETE'])
+@app.route('/api/pets/<int:id>', methods=['GET', 'PATCH', 'DELETE'])
 def pet_by_id(id):
     # query the db for the target pet
     pet = Pet.query.filter(Pet.id == id).first()
@@ -108,6 +119,7 @@ def pet_by_id(id):
         # option B
         for field in data:
             # pet.field = data[field]  # doesn't work!
+            # setattr(object_to_update, attribute_name, new_value)
             setattr(pet, field, data[field])  # does work
 
         # save back to db
