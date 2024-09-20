@@ -45,6 +45,8 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy import MetaData
 from sqlalchemy.orm import validates
+from flask_bcrypt import Bcrypt
+from sqlalchemy.ext.hybrid import hybrid_property
 
 
 
@@ -64,6 +66,9 @@ convention = {
 
 # init sqlalchemy object
 db = SQLAlchemy(metadata=MetaData(naming_convention=convention))
+
+# init bcrypt plugin
+bcrypt = Bcrypt()
 
 
 # create a new class/model
@@ -108,4 +113,32 @@ class Owner(db.Model, SerializerMixin):
 
     def __repr__(self) -> str:
         return f'<Owner {self.id} {self.name}>'
+
+
+class User(db.Model, SerializerMixin):
+    __tablename__ = 'users'
+
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String, nullable=False, unique=True)
+    password_hash = db.Column(db.String)
+
+    @hybrid_property
+    def password(self):
+        """Returns the password hash"""
+        return self.password_hash
+
+    @password.setter
+    def password(self, plain_text_password):
+        """Hashes the plain text password"""
+        bytes = plain_text_password.encode('utf-8')  # convert our string into raw bytes
+        self.password_hash = bcrypt.generate_password_hash(bytes)  # hash the bytes
+
+    def authenticate(self, password):
+        return bcrypt.check_password_hash(
+            self.password_hash,  # hashed password
+            password.encode('utf-8')  # plain text password
+        )
+
+    def __repr__(self) -> str:
+        return f'<User {self.id} {self.username}>'
 

@@ -53,7 +53,6 @@ def say_hello(name):
 
     return {'hello': name.upper()}, 200
 
-
 @app.route('/api/pets', methods=['GET', 'POST'])
 def all_pets():
     # check the method of the request

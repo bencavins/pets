@@ -10,6 +10,7 @@ flask-migrate = "*"
 importlib-metadata = "*"
 sqlalchemy-serializer = "*"
 python-dotenv = "*"
+flask-bcrypt = "*"
 
 [dev-packages]
 
