@@ -11,6 +11,7 @@ importlib-metadata = "*"
 sqlalchemy-serializer = "*"
 python-dotenv = "*"
 flask-bcrypt = "*"
+flask-cors = "*"
 
 [dev-packages]
 

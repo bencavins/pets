@@ -122,6 +122,8 @@ class User(db.Model, SerializerMixin):
     username = db.Column(db.String, nullable=False, unique=True)
     password_hash = db.Column(db.String)
 
+    serialize_rules = ['-password_hash']
+
     @hybrid_property
     def password(self):
         """Returns the password hash"""

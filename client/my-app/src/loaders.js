@@ -1,7 +1,7 @@
 async function userLoader({ request, params }) {
   const res = await fetch('/api/check_session', {
       method: 'GET',
-      credentials: 'include'
+      // credentials: 'include'
     })
     .then(resp => {
       if (resp.ok) {

@@ -9,9 +9,10 @@
 
 import os
 import traceback
-from flask import Flask, request
+from flask import Flask, request, session
 from flask_migrate import Migrate
-from models import db, Pet, PetException
+from models import db, Pet, PetException, User
+from flask_cors import CORS
 
 
 # initialize our flask app
@@ -19,10 +20,17 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URI']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+# set the secret key (needed for cookies)
+app.secret_key = os.environ['SECRET_KEY']
+
 # initialize sqlalchemy plugin with flask
 db.init_app(app)
 # initialize Alembic (aka flask migrate)
 Migrate(app, db)
+
+# set up CORS
+# CORS(app, supports_credentials=True)
+CORS(app)
 
 
 # define your routes (flask calls these views)
@@ -52,6 +60,54 @@ def say_hello(name):
         return {'error': 'name too short'}, 400
 
     return {'hello': name.upper()}, 200
+
+
+@app.route('/api/login', methods=['POST'])
+def login():
+    data = request.get_json()
+
+    # query the database by username
+    user = User.query.filter(User.username == data.get('username')).first()
+
+    # check if user exists
+    if user is None:
+        return {'error': 'login failed'}, 401
+    
+    # checking if the password matches
+    if not user.authenticate(data.get('password')):
+        return {'error': 'login failed'}, 401
+    
+    # set a browser cookie
+    session['user_id'] = user.id
+    
+    return user.to_dict(), 200
+
+@app.route('/api/logout', methods=['DELETE'])
+def logout():
+    # delete the cookie
+    session.pop('user_id', None)
+    return {'message': 'logout success'}, 200
+
+@app.route('/api/signup', methods=['POST'])
+def signup():
+    pass
+
+@app.route('/api/check_session', methods=['GET'])
+def check_session():
+    """Check if the user is already logged in"""
+    # get the user_id cookie
+    user_id = session.get('user_id')
+
+    # query the db for a user with this id
+    user = User.query.filter(User.id == user_id).first()
+
+    # make sure the user exists in the db
+    if user is None:
+        # return error code if not
+        return {'error': 'unauthorized'}, 401
+    
+    # return success code 
+    return user.to_dict(), 200
 
 @app.route('/api/pets', methods=['GET', 'POST'])
 def all_pets():
